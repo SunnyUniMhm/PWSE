@@ -1,0 +1,14 @@
+#main-game-field {
+    background-color: #9f8170;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    grid-gap: 10px;
+}
+
+#main-game-field > div {
+    background-color: #e5dede;
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

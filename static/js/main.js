@@ -13,6 +13,7 @@ $(document).ready(function () {
         freeCellsLeft;
         tilesData;
         #mainGameField;
+        #gameScoreElement;
         gameObject;
 
         constructor() {
@@ -47,9 +48,13 @@ $(document).ready(function () {
             };
 
             if (!$('#main-game-field')) {
-                throw "Main game field DOM is not found";
+                throw "Main game field element is not found";
             }
             this.#mainGameField = $('#main-game-field');
+            if (!$('#game-score')) {
+                throw "Game score element is not found";
+            }
+            this.#gameScoreElement = $('#game-score');
             this.maxTileScore = 2;
             MainGame.gameObject = this;
         }
@@ -107,6 +112,10 @@ $(document).ready(function () {
 
             this.freeCellsLeft = currentAmountOfFreeCells;
         }
+
+        renderCurrentGameScore () {
+            this.#gameScoreElement.text(this.totalScore);
+        }
     }
 
 	class GameTile {
@@ -152,6 +161,7 @@ $(document).ready(function () {
             }
             this.color = MainGame.tilesColors[this.score];
             MainGame.gameObject.increaseTotalScore(this.score);
+            MainGame.gameObject.renderCurrentGameScore();
 
             if (this.score > MainGame.gameObject.maxTileScore) {
                 try {

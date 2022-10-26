@@ -56,6 +56,18 @@ $(document).ready(function () {
         }
     }
 
+	class GameTile {
+        score;
+        color;
+        location;
+
+        constructor() {
+            this.score = 2;
+            this.color = '#7CB5E2';
+            this.location = [0, 0];
+        }
+    }
+
     var game = new MainGame();
     console.log(game);
     game.createGameField();

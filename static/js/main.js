@@ -94,6 +94,19 @@ $(document).ready(function () {
             }
             this.maxTileScore = this.maxTileScore * 2;
         }
+
+        updateAmountOfTheFreeCells () {
+            let currentAmountOfFreeCells = 0;
+            for (let row in this.tilesData) {
+                for (let cell in this.tilesData[row]) {
+                    if (!this.tilesData[row][cell]) {
+                        currentAmountOfFreeCells += 1;
+                    }
+                }
+            }
+
+            this.freeCellsLeft = currentAmountOfFreeCells;
+        }
     }
 
 	class GameTile {
@@ -111,12 +124,18 @@ $(document).ready(function () {
                 throw "Invalid tile coordinates: Outside of the game field";
             }
 
+            if (MainGame.gameObject.tilesData[locationData.rowNumber][locationData.cellNumber] !== null) {
+                throw `Trying to create already existing tile on [${locationData.rowNumber}][${locationData.cellNumber}]`;
+            }
+
             this.score = 2;
             this.color = MainGame.tilesColors[this.score];
             this.location = [
                 locationData.rowNumber,
                 locationData.cellNumber
             ];
+            MainGame.gameObject.tilesData[locationData.rowNumber][locationData.cellNumber] = this;
+            MainGame.gameObject.updateAmountOfTheFreeCells();
         }
 
         upgradeTile() {

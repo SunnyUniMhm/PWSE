@@ -50,6 +50,7 @@ $(document).ready(function () {
                 throw "Main game field DOM is not found";
             }
             this.#mainGameField = $('#main-game-field');
+            this.maxTileScore = 2;
             MainGame.gameObject = this;
         }
 
@@ -82,6 +83,16 @@ $(document).ready(function () {
                 throw "Score amount should be positive integer";
             }
             this.totalScore += scoreAmount;
+        }
+
+        increaseMaxTileScore() {
+            if (
+                this.maxTileScore >= 2048
+                || (this.maxTileScore * 2) > 2048
+            ) {
+                throw "Impossible to set max. tile score over 2048";
+            }
+            this.maxTileScore = this.maxTileScore * 2;
         }
     }
 
@@ -122,6 +133,14 @@ $(document).ready(function () {
             }
             this.color = MainGame.tilesColors[this.score];
             MainGame.gameObject.increaseTotalScore(this.score);
+
+            if (this.score > MainGame.gameObject.maxTileScore) {
+                try {
+                    MainGame.gameObject.increaseMaxTileScore();
+                } catch (exception) {
+                    alert(exception);
+                }
+            }
         }
     }
 

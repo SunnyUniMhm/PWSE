@@ -130,10 +130,10 @@ $(document).ready(function () {
 
             this.score = 2;
             this.color = MainGame.tilesColors[this.score];
-            this.location = [
-                locationData.rowNumber,
-                locationData.cellNumber
-            ];
+            this.location = {
+                rowNumber: locationData.rowNumber,
+                cellNumber: locationData.cellNumber
+            };
             MainGame.gameObject.tilesData[locationData.rowNumber][locationData.cellNumber] = this;
             MainGame.gameObject.updateAmountOfTheFreeCells();
         }
@@ -160,6 +160,15 @@ $(document).ready(function () {
                     alert(exception);
                 }
             }
+        }
+
+        destroyTile () {
+            if (MainGame.gameObject.tilesData[this.location.rowNumber][this.location.cellNumber] === null) {
+                throw `Trying to delete already non-existent tile on [${this.location.rowNumber}][${this.location.cellNumber}]`;
+            }
+
+            MainGame.gameObject.tilesData[this.location.rowNumber][this.location.cellNumber] = null;
+            MainGame.gameObject.updateAmountOfTheFreeCells();
         }
     }
 

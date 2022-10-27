@@ -11,4 +11,9 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    cursor: default;
+}
+
+#main-game-field > div:hover {
+    opacity: 0.85;
 }

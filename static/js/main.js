@@ -135,6 +135,41 @@ $(document).ready(function () {
                 }
             }
         }
+
+        restartGame() {
+            this.tilesData = {
+                1: {
+                    1: null,
+                    2: null,
+                    3: null,
+                    4: null,
+                },
+                2: {
+                    1: null,
+                    2: null,
+                    3: null,
+                    4: null,
+                },
+                3: {
+                    1: null,
+                    2: null,
+                    3: null,
+                    4: null,
+                },
+                4: {
+                    1: null,
+                    2: null,
+                    3: null,
+                    4: null,
+                }
+            };
+
+            this.maxTileScore = 2;
+            this.totalScore = 0;
+            this.updateAmountOfTheFreeCells();
+            this.renderCurrentGameScore();
+            this.renderGameTiles();
+        }
     }
 
 	class GameTile {

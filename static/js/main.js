@@ -135,6 +135,30 @@ $(document).ready(function () {
                 }
             }
         }
+
+        getRandomEmptyCellLocation () {
+            var currentlyEmptyCells = [];
+            var randomEmptyCell = [];
+
+            for (let rowNumber = 1; rowNumber <= 4; rowNumber ++) {
+                for (let cellNumber = 1; cellNumber <= 4; cellNumber ++) {
+                    let currentCell = this.tilesData[rowNumber][cellNumber];
+                    if (currentCell === null) {
+                        currentlyEmptyCells.push([rowNumber, cellNumber]);
+                    }
+                }
+            }
+
+            if (currentlyEmptyCells.length > 0) {
+                randomEmptyCell = currentlyEmptyCells[Math.floor(Math.random() * currentlyEmptyCells.length)];
+                return {
+                    rowNumber: randomEmptyCell[0],
+                    cellNumber: randomEmptyCell[1]
+                };
+            } else {
+                return false;
+            }
+        }
     }
 
 	class GameTile {

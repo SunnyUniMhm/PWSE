@@ -13,9 +13,12 @@ $(document).ready(function () {
         freeCellsLeft;
         tilesData;
         #mainGameField;
+        #gameScoreElement;
         gameObject;
+        #defaultCellBgColor;
 
         constructor() {
+            this.#defaultCellBgColor = '#e5dede';
             this.totalScore = 0;
             this.maxTileScore = 0;
             this.freeCellsLeft = 16;
@@ -47,9 +50,13 @@ $(document).ready(function () {
             };
 
             if (!$('#main-game-field')) {
-                throw "Main game field DOM is not found";
+                throw "Main game field element is not found";
             }
             this.#mainGameField = $('#main-game-field');
+            if (!$('#game-score')) {
+                throw "Game score element is not found";
+            }
+            this.#gameScoreElement = $('#game-score');
             this.maxTileScore = 2;
             MainGame.gameObject = this;
         }
@@ -107,6 +114,27 @@ $(document).ready(function () {
 
             this.freeCellsLeft = currentAmountOfFreeCells;
         }
+
+        renderCurrentGameScore () {
+            this.#gameScoreElement.text(this.totalScore);
+        }
+
+        renderGameTiles () {
+            for (let rowNumber = 1; rowNumber <= 4; rowNumber ++) {
+                for (let cellNumber = 1; cellNumber <= 4; cellNumber ++) {
+                    let currentTile = this.tilesData[rowNumber][cellNumber];
+                    if (currentTile === null) {
+                        this.#mainGameField.children(`#cell-${rowNumber}-${cellNumber}`).text('');
+                        this.#mainGameField.children(`#cell-${rowNumber}-${cellNumber}`).css('background-color', this.#defaultCellBgColor);
+                        continue;
+                    }
+
+                    this.#mainGameField.children(`#cell-${rowNumber}-${cellNumber}`).text(currentTile.score);
+                    this.#mainGameField.children(`#cell-${rowNumber}-${cellNumber}`).css('background-color', currentTile.color);
+
+                }
+            }
+        }
     }
 
 	class GameTile {
@@ -130,12 +158,13 @@ $(document).ready(function () {
 
             this.score = 2;
             this.color = MainGame.tilesColors[this.score];
-            this.location = [
-                locationData.rowNumber,
-                locationData.cellNumber
-            ];
+            this.location = {
+                rowNumber: locationData.rowNumber,
+                cellNumber: locationData.cellNumber
+            };
             MainGame.gameObject.tilesData[locationData.rowNumber][locationData.cellNumber] = this;
             MainGame.gameObject.updateAmountOfTheFreeCells();
+            MainGame.gameObject.renderGameTiles();
         }
 
         upgradeTile() {
@@ -152,6 +181,8 @@ $(document).ready(function () {
             }
             this.color = MainGame.tilesColors[this.score];
             MainGame.gameObject.increaseTotalScore(this.score);
+            MainGame.gameObject.renderCurrentGameScore();
+            MainGame.gameObject.renderGameTiles();
 
             if (this.score > MainGame.gameObject.maxTileScore) {
                 try {
@@ -160,6 +191,16 @@ $(document).ready(function () {
                     alert(exception);
                 }
             }
+        }
+
+        destroyTile () {
+            if (MainGame.gameObject.tilesData[this.location.rowNumber][this.location.cellNumber] === null) {
+                throw `Trying to delete already non-existent tile on [${this.location.rowNumber}][${this.location.cellNumber}]`;
+            }
+
+            MainGame.gameObject.tilesData[this.location.rowNumber][this.location.cellNumber] = null;
+            MainGame.gameObject.updateAmountOfTheFreeCells();
+            MainGame.gameObject.renderGameTiles();
         }
     }
 

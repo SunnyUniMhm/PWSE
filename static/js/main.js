@@ -261,6 +261,45 @@ $(document).ready(function () {
             MainGame.gameObject.updateAmountOfTheFreeCells();
             MainGame.gameObject.renderGameTiles();
         }
+
+        moveTile(locationData) {
+            var currentLocationData = {
+                rowNumber: this.location.rowNumber,
+                cellNumber: this.location.cellNumber
+            };
+            var newLocationData = {
+                rowNumber: 0,
+                cellNumber: 0
+            };
+            console.log(newLocationData);
+            console.log(locationData);
+
+            if (
+                locationData.rowNumber < 1
+                || locationData.rowNumber > 4
+                || locationData.cellNumber < 1
+                || locationData.cellNumber > 4
+            ) {
+                throw "Trying to move tile to invalid coordinates: Outside of the game field";
+            } else {
+                newLocationData.rowNumber = locationData.rowNumber;
+                newLocationData.cellNumber = locationData.cellNumber;
+            }
+
+            this.location.rowNumber = newLocationData.rowNumber;
+            this.location.cellNumber = newLocationData.cellNumber;
+
+            console.log(newLocationData.rowNumber);
+            console.log(newLocationData.cellNumber);
+
+            if (MainGame.gameObject.tilesData[newLocationData.rowNumber][newLocationData.cellNumber] !== null) {
+                throw `Trying to move tile to already occupied cell [${newLocationData.rowNumber}][${newLocationData.cellNumber}]`;
+            }
+
+            MainGame.gameObject.tilesData[currentLocationData.rowNumber][currentLocationData.cellNumber] = null;
+            MainGame.gameObject.tilesData[newLocationData.rowNumber][newLocationData.cellNumber] = this;
+            MainGame.gameObject.renderGameTiles();
+        }
     }
 
     try {

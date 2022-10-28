@@ -348,6 +348,31 @@ $(document).ready(function () {
 
             return null;
         }
+
+        checkForPossibilityOfTheCombining(combiningDirection) {
+            let locationOfTileToBeCombinedWith = {
+                rowNumber: 0,
+                cellNumber: 0
+            };
+
+            if (!['up', 'down', 'left', 'right'].includes(combiningDirection)) {
+                throw "Trying to combine game tile in unknown direction";
+            }
+
+            locationOfTileToBeCombinedWith = this.lookForTheNextTile(combiningDirection);
+            if (locationOfTileToBeCombinedWith !== null) {
+                if (MainGame.gameObject.tilesData[locationOfTileToBeCombinedWith.rowNumber][locationOfTileToBeCombinedWith.cellNumber].score !== this.score) {
+                    // return FALSE if tile in the direction of combining has different score
+                    return false;
+                } else {
+                    // return TRUE if tile in the direction of combining exists and has the same score
+                    return true;
+                }
+            } else {
+                // return FALSE if no tile was found in the direction of combining
+                return false;
+            }
+        }
     }
 
     try {

@@ -373,6 +373,28 @@ $(document).ready(function () {
                 return false;
             }
         }
+
+        combineTiles(combiningDirection) {
+            let locationOfTileToBeCombinedWith = {
+                rowNumber: 0,
+                cellNumber: 0
+            };
+
+            if (!['up', 'down', 'left', 'right'].includes(combiningDirection)) {
+                throw "Trying to combine game tiles in unknown direction";
+            }
+
+            let combiningIsPossible = this.checkForPossibilityOfTheCombining(combiningDirection);
+
+            if (combiningIsPossible === false) {
+                return false;
+            }
+
+            locationOfTileToBeCombinedWith = this.lookForTheNextTile(combiningDirection);
+            MainGame.gameObject.tilesData[locationOfTileToBeCombinedWith.rowNumber][locationOfTileToBeCombinedWith.cellNumber].upgradeTile();
+            this.destroyTile();
+            return true;
+        }
     }
 
     try {

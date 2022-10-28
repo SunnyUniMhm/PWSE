@@ -194,6 +194,30 @@ $(document).ready(function () {
                 return false;
             }
         }
+
+        combineAllPossibleTiles(combiningDirection) {
+            let tilesToBeCombined = [];
+
+            for (let rowNumber = 1; rowNumber <= 4; rowNumber ++) {
+                for (let cellNumber = 1; cellNumber <= 4; cellNumber ++) {
+                    let currentTile = this.tilesData[rowNumber][cellNumber];
+                    if (currentTile === null) {
+                        continue;
+                    }
+
+                    let combiningIsPossible = currentTile.checkForPossibilityOfTheCombining(combiningDirection);
+                    if (combiningIsPossible === true) {
+                        tilesToBeCombined.push(currentTile);
+                    }
+                }
+            }
+
+            if (tilesToBeCombined.length > 0) {
+                for (let currentlyCombinedTile of tilesToBeCombined) {
+                    currentlyCombinedTile.combineTiles(combiningDirection);
+                }
+            }
+        }
     }
 
 	class GameTile {

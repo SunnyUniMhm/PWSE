@@ -271,8 +271,6 @@ $(document).ready(function () {
                 rowNumber: 0,
                 cellNumber: 0
             };
-            console.log(newLocationData);
-            console.log(locationData);
 
             if (
                 locationData.rowNumber < 1
@@ -299,6 +297,56 @@ $(document).ready(function () {
             MainGame.gameObject.tilesData[currentLocationData.rowNumber][currentLocationData.cellNumber] = null;
             MainGame.gameObject.tilesData[newLocationData.rowNumber][newLocationData.cellNumber] = this;
             MainGame.gameObject.renderGameTiles();
+        }
+
+        lookForTheNextTile(direction) {
+            var locationOfTheNextTile = {
+                rowNumber: this.location.rowNumber,
+                cellNumber: this.location.cellNumber
+            };
+
+            if (!['up', 'down', 'left', 'right'].includes(direction)) {
+                throw "Trying to look for the next game tile in unknown direction";
+            }
+
+            // return NULL if current tile already last in specified direction
+            if (
+                (direction === "up" && this.location.rowNumber === 0)
+                || (direction === "down" && this.location.rowNumber === 4)
+                || (direction === "left" && this.location.cellNumber === 0)
+                || (direction === "right" && this.location.cellNumber === 4)
+            ) {
+                return null;
+            }
+
+            do {
+                if (direction === "up") {
+                    locationOfTheNextTile.rowNumber -= 1;
+                } else if (direction === "down") {
+                    locationOfTheNextTile.rowNumber += 1;
+                } else if (direction === "left") {
+                    locationOfTheNextTile.cellNumber -= 1;
+                } else if (direction === "right") {
+                    locationOfTheNextTile.cellNumber += 1;
+                }
+
+                if (
+                    locationOfTheNextTile.rowNumber < 1
+                    || locationOfTheNextTile.rowNumber > 4
+                    || locationOfTheNextTile.cellNumber < 1
+                    || locationOfTheNextTile.cellNumber > 4
+                ) {
+                    break;
+                } else if (
+                    MainGame.gameObject.tilesData[locationOfTheNextTile.rowNumber][locationOfTheNextTile.cellNumber] !== null
+                ) {
+                    return locationOfTheNextTile;
+                }
+            } while (
+                MainGame.gameObject.tilesData[locationOfTheNextTile.rowNumber][locationOfTheNextTile.cellNumber] === null
+            );
+
+            return null;
         }
     }
 

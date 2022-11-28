@@ -218,6 +218,86 @@ $(document).ready(function () {
                 }
             }
         }
+
+        moveAllTiles(direction) {
+            // starting/last row/cell numbers for cycling through all game tiles
+            var startingRow = 0;
+            var startingCell = 0;
+            var lastRow = 0;
+            var lastCell = 0;
+            // direction of cycling through rows/cells
+            var rowsCycleDirection = "forward";
+            var cellsCycleDirection = "forward";
+
+            if (!['up', 'down', 'left', 'right'].includes(direction)) {
+                throw "Trying to move game tiles in unknown direction";
+            }
+
+            if (direction === "up") {
+                startingRow = 1;
+                startingCell = 1;
+                lastRow = 4;
+                lastCell = 4;
+                rowsCycleDirection = "forward";
+                cellsCycleDirection = "forward";
+            } else if (direction === "down") {
+                startingRow = 4;
+                startingCell = 1;
+                lastRow = 1;
+                lastCell = 4;
+                rowsCycleDirection = "backward";
+                cellsCycleDirection = "forward";
+            } else if (direction === "left") {
+                startingRow = 1;
+                startingCell = 1;
+                lastRow = 4;
+                lastCell = 4;
+                rowsCycleDirection = "forward";
+                cellsCycleDirection = "forward";
+            } else if (direction === "right") {
+                startingRow = 1;
+                startingCell = 4;
+                lastRow = 4;
+                lastCell = 1;
+                rowsCycleDirection = "forward";
+                cellsCycleDirection = "backward";
+            }
+            // cycling through all game tiles using specified parameters
+            for (let row = startingRow;;) {
+                for (let cell = startingCell;;) {
+                    if (MainGame.gameObject.tilesData[row][cell] !== null) {
+                        MainGame.gameObject.tilesData[row][cell].moveTile(direction);
+                    }
+                    if (cellsCycleDirection === "forward") {
+                        if (cell < lastCell) {
+                            cell ++;
+                        } else {
+                            break;
+                        }
+                    } else if (cellsCycleDirection === "backward") {
+                        if (cell > lastCell) {
+                            cell --;
+                        } else {
+                            break;
+                        }
+                    }
+                }
+
+                if (rowsCycleDirection === "forward") {
+                    if (row < lastRow) {
+                        row ++;
+                    } else {
+                        break;
+                    }
+                } else if (rowsCycleDirection === "backward") {
+                    if (row > lastRow) {
+                        row --;
+                    } else {
+                        break;
+                    }
+                }
+            }
+        }
     }
 
 	class GameTile {
@@ -286,7 +366,69 @@ $(document).ready(function () {
             MainGame.gameObject.renderGameTiles();
         }
 
-        moveTile(locationData) {
+        moveTile(direction) {
+            var newTileLocation = this.generateNewTileLocation(direction);
+            this.changeTileLocation(newTileLocation);
+        }
+
+        generateNewTileLocation(direction) {
+            // current tile location
+            var currentLocationData = {
+                rowNumber: this.location.rowNumber,
+                cellNumber: this.location.cellNumber
+            };
+            // location of the tile next to current in the specified direction
+            var nextTileLocation = {
+                rowNumber: 0,
+                cellNumber: 0
+            };
+            // new tile location after modifying according to the direction
+            var newTileLocation = {
+                rowNumber: 0,
+                cellNumber: 0
+            };
+            if (!['up', 'down', 'left', 'right'].includes(direction)) {
+                throw "Trying to move game tile in unknown direction";
+            }
+            nextTileLocation = this.lookForTheNextTile(direction);
+            // if tile can't move in the specified location (located on the edge of the field)
+            // simply return tile's current location
+            if (nextTileLocation === false) {
+                return currentLocationData;
+            }
+            // if not tiles found in the specified direction
+            // generate location on the edge of the field in this direction
+            if (nextTileLocation === null) {
+                newTileLocation = currentLocationData;
+
+                if (direction === "up") {
+                    newTileLocation.rowNumber = 1;
+                } else if (direction === "down") {
+                    newTileLocation.rowNumber = 4;
+                } else if (direction === "left") {
+                    newTileLocation.cellNumber = 1;
+                } else if (direction === "right") {
+                    newTileLocation.cellNumber = 4;
+                }
+            // if tile was found, generate location
+            // right next to found tile
+            } else {
+                newTileLocation = nextTileLocation;
+
+                if (direction === "up") {
+                    newTileLocation.rowNumber += 1;
+                } else if (direction === "down") {
+                    newTileLocation.rowNumber -= 1;
+                } else if (direction === "left") {
+                    newTileLocation.cellNumber += 1;
+                } else if (direction === "right") {
+                    newTileLocation.cellNumber -= 1;
+                }
+            }
+            return newTileLocation;
+        }
+
+        changeTileLocation(locationData) {
             var currentLocationData = {
                 rowNumber: this.location.rowNumber,
                 cellNumber: this.location.cellNumber
@@ -333,14 +475,14 @@ $(document).ready(function () {
                 throw "Trying to look for the next game tile in unknown direction";
             }
 
-            // return NULL if current tile already last in specified direction
+            // return FALSE if current tile already last in specified direction
             if (
                 (direction === "up" && this.location.rowNumber === 0)
                 || (direction === "down" && this.location.rowNumber === 4)
                 || (direction === "left" && this.location.cellNumber === 0)
                 || (direction === "right" && this.location.cellNumber === 4)
             ) {
-                return null;
+                return false;
             }
 
             do {
@@ -384,7 +526,7 @@ $(document).ready(function () {
             }
 
             locationOfTileToBeCombinedWith = this.lookForTheNextTile(combiningDirection);
-            if (locationOfTileToBeCombinedWith !== null) {
+            if (locationOfTileToBeCombinedWith !== null && locationOfTileToBeCombinedWith !== false) {
                 if (MainGame.gameObject.tilesData[locationOfTileToBeCombinedWith.rowNumber][locationOfTileToBeCombinedWith.cellNumber].score !== this.score) {
                     // return FALSE if tile in the direction of combining has different score
                     return false;

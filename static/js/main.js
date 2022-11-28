@@ -215,6 +215,9 @@ $(document).ready(function () {
             this.updateAmountOfTheFreeCells();
             this.renderCurrentGameScore();
             this.renderGameTiles();
+            this.renderCurrentGameScore();
+            this.createRandomTile();
+            this.enableHotkeys();
         }
 
         getRandomEmptyCellLocation () {

@@ -194,6 +194,30 @@ $(document).ready(function () {
                 return false;
             }
         }
+
+        combineAllPossibleTiles(combiningDirection) {
+            let tilesToBeCombined = [];
+
+            for (let rowNumber = 1; rowNumber <= 4; rowNumber ++) {
+                for (let cellNumber = 1; cellNumber <= 4; cellNumber ++) {
+                    let currentTile = this.tilesData[rowNumber][cellNumber];
+                    if (currentTile === null) {
+                        continue;
+                    }
+
+                    let combiningIsPossible = currentTile.checkForPossibilityOfTheCombining(combiningDirection);
+                    if (combiningIsPossible === true) {
+                        tilesToBeCombined.push(currentTile);
+                    }
+                }
+            }
+
+            if (tilesToBeCombined.length > 0) {
+                for (let currentlyCombinedTile of tilesToBeCombined) {
+                    currentlyCombinedTile.combineTiles(combiningDirection);
+                }
+            }
+        }
     }
 
 	class GameTile {
@@ -271,8 +295,6 @@ $(document).ready(function () {
                 rowNumber: 0,
                 cellNumber: 0
             };
-            console.log(newLocationData);
-            console.log(locationData);
 
             if (
                 locationData.rowNumber < 1
@@ -299,6 +321,103 @@ $(document).ready(function () {
             MainGame.gameObject.tilesData[currentLocationData.rowNumber][currentLocationData.cellNumber] = null;
             MainGame.gameObject.tilesData[newLocationData.rowNumber][newLocationData.cellNumber] = this;
             MainGame.gameObject.renderGameTiles();
+        }
+
+        lookForTheNextTile(direction) {
+            var locationOfTheNextTile = {
+                rowNumber: this.location.rowNumber,
+                cellNumber: this.location.cellNumber
+            };
+
+            if (!['up', 'down', 'left', 'right'].includes(direction)) {
+                throw "Trying to look for the next game tile in unknown direction";
+            }
+
+            // return NULL if current tile already last in specified direction
+            if (
+                (direction === "up" && this.location.rowNumber === 0)
+                || (direction === "down" && this.location.rowNumber === 4)
+                || (direction === "left" && this.location.cellNumber === 0)
+                || (direction === "right" && this.location.cellNumber === 4)
+            ) {
+                return null;
+            }
+
+            do {
+                if (direction === "up") {
+                    locationOfTheNextTile.rowNumber -= 1;
+                } else if (direction === "down") {
+                    locationOfTheNextTile.rowNumber += 1;
+                } else if (direction === "left") {
+                    locationOfTheNextTile.cellNumber -= 1;
+                } else if (direction === "right") {
+                    locationOfTheNextTile.cellNumber += 1;
+                }
+
+                if (
+                    locationOfTheNextTile.rowNumber < 1
+                    || locationOfTheNextTile.rowNumber > 4
+                    || locationOfTheNextTile.cellNumber < 1
+                    || locationOfTheNextTile.cellNumber > 4
+                ) {
+                    break;
+                } else if (
+                    MainGame.gameObject.tilesData[locationOfTheNextTile.rowNumber][locationOfTheNextTile.cellNumber] !== null
+                ) {
+                    return locationOfTheNextTile;
+                }
+            } while (
+                MainGame.gameObject.tilesData[locationOfTheNextTile.rowNumber][locationOfTheNextTile.cellNumber] === null
+            );
+
+            return null;
+        }
+
+        checkForPossibilityOfTheCombining(combiningDirection) {
+            let locationOfTileToBeCombinedWith = {
+                rowNumber: 0,
+                cellNumber: 0
+            };
+
+            if (!['up', 'down', 'left', 'right'].includes(combiningDirection)) {
+                throw "Trying to combine game tile in unknown direction";
+            }
+
+            locationOfTileToBeCombinedWith = this.lookForTheNextTile(combiningDirection);
+            if (locationOfTileToBeCombinedWith !== null) {
+                if (MainGame.gameObject.tilesData[locationOfTileToBeCombinedWith.rowNumber][locationOfTileToBeCombinedWith.cellNumber].score !== this.score) {
+                    // return FALSE if tile in the direction of combining has different score
+                    return false;
+                } else {
+                    // return TRUE if tile in the direction of combining exists and has the same score
+                    return true;
+                }
+            } else {
+                // return FALSE if no tile was found in the direction of combining
+                return false;
+            }
+        }
+
+        combineTiles(combiningDirection) {
+            let locationOfTileToBeCombinedWith = {
+                rowNumber: 0,
+                cellNumber: 0
+            };
+
+            if (!['up', 'down', 'left', 'right'].includes(combiningDirection)) {
+                throw "Trying to combine game tiles in unknown direction";
+            }
+
+            let combiningIsPossible = this.checkForPossibilityOfTheCombining(combiningDirection);
+
+            if (combiningIsPossible === false) {
+                return false;
+            }
+
+            locationOfTileToBeCombinedWith = this.lookForTheNextTile(combiningDirection);
+            MainGame.gameObject.tilesData[locationOfTileToBeCombinedWith.rowNumber][locationOfTileToBeCombinedWith.cellNumber].upgradeTile();
+            this.destroyTile();
+            return true;
         }
     }
 

@@ -119,6 +119,18 @@ $(document).ready(function () {
             });
         }
 
+        disableArrowKeys() {
+            // removing arrow keys controls and only allowing
+            // restart key functionality
+            $(document).off('keydown');
+            $(document).on('keydown', function (e) {
+                var keyPressed = e.originalEvent.code;
+                if (keyPressed === "KeyR") {
+                    MainGame.gameObject.restartGame();
+                }
+            });
+        }
+
         increaseTotalScore(scoreAmount) {
             if (scoreAmount <= 0) {
                 throw "Score amount should be positive integer";

@@ -85,6 +85,52 @@ $(document).ready(function () {
             }
         }
 
+        enableHotkeys () {
+            // removing all hotkeys events to be sure
+            // that events will not be duplicated
+            $(document).off('keydown');
+            $(document).on('keydown', function (e) {
+                console.log(e);
+                var keyPressed = e.originalEvent.code;
+                console.log(keyPressed);
+                if (keyPressed === "ArrowUp") {
+                    MainGame.gameObject.combineAllPossibleTiles("up");
+                    MainGame.gameObject.moveAllTiles("up");
+                    MainGame.gameObject.createRandomTile();
+                    MainGame.gameObject.renderCurrentGameScore();
+                } else if (keyPressed === "ArrowDown") {
+                    MainGame.gameObject.combineAllPossibleTiles("down");
+                    MainGame.gameObject.moveAllTiles("down");
+                    MainGame.gameObject.createRandomTile();
+                    MainGame.gameObject.renderCurrentGameScore();
+                } else if (keyPressed === "ArrowLeft") {
+                    MainGame.gameObject.combineAllPossibleTiles("left");
+                    MainGame.gameObject.moveAllTiles("left");
+                    MainGame.gameObject.createRandomTile();
+                    MainGame.gameObject.renderCurrentGameScore();
+                } else if (keyPressed === "ArrowRight") {
+                    MainGame.gameObject.combineAllPossibleTiles("right");
+                    MainGame.gameObject.moveAllTiles("right");
+                    MainGame.gameObject.createRandomTile();
+                    MainGame.gameObject.renderCurrentGameScore();
+                } else if (keyPressed === "KeyR") {
+                    MainGame.gameObject.restartGame();
+                }
+            });
+        }
+
+        disableArrowKeys() {
+            // removing arrow keys controls and only allowing
+            // restart key functionality
+            $(document).off('keydown');
+            $(document).on('keydown', function (e) {
+                var keyPressed = e.originalEvent.code;
+                if (keyPressed === "KeyR") {
+                    MainGame.gameObject.restartGame();
+                }
+            });
+        }
+
         increaseTotalScore(scoreAmount) {
             if (scoreAmount <= 0) {
                 throw "Score amount should be positive integer";
@@ -169,6 +215,9 @@ $(document).ready(function () {
             this.updateAmountOfTheFreeCells();
             this.renderCurrentGameScore();
             this.renderGameTiles();
+            this.renderCurrentGameScore();
+            this.createRandomTile();
+            this.enableHotkeys();
         }
 
         getRandomEmptyCellLocation () {

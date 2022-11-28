@@ -286,6 +286,63 @@ $(document).ready(function () {
             MainGame.gameObject.renderGameTiles();
         }
 
+        generateNewTileLocation(direction) {
+            // current tile location
+            var currentLocationData = {
+                rowNumber: this.location.rowNumber,
+                cellNumber: this.location.cellNumber
+            };
+            // location of the tile next to current in the specified direction
+            var nextTileLocation = {
+                rowNumber: 0,
+                cellNumber: 0
+            };
+            // new tile location after modifying according to the direction
+            var newTileLocation = {
+                rowNumber: 0,
+                cellNumber: 0
+            };
+            if (!['up', 'down', 'left', 'right'].includes(direction)) {
+                throw "Trying to move game tile in unknown direction";
+            }
+            nextTileLocation = this.lookForTheNextTile(direction);
+            // if tile can't move in the specified location (located on the edge of the field)
+            // simply return tile's current location
+            if (nextTileLocation === false) {
+                return currentLocationData;
+            }
+            // if not tiles found in the specified direction
+            // generate location on the edge of the field in this direction
+            if (nextTileLocation === null) {
+                newTileLocation = currentLocationData;
+
+                if (direction === "up") {
+                    newTileLocation.rowNumber = 1;
+                } else if (direction === "down") {
+                    newTileLocation.rowNumber = 4;
+                } else if (direction === "left") {
+                    newTileLocation.cellNumber = 1;
+                } else if (direction === "right") {
+                    newTileLocation.cellNumber = 4;
+                }
+            // if tile was found, generate location
+            // right next to found tile
+            } else {
+                newTileLocation = nextTileLocation;
+
+                if (direction === "up") {
+                    newTileLocation.rowNumber += 1;
+                } else if (direction === "down") {
+                    newTileLocation.rowNumber -= 1;
+                } else if (direction === "left") {
+                    newTileLocation.cellNumber += 1;
+                } else if (direction === "right") {
+                    newTileLocation.cellNumber -= 1;
+                }
+            }
+            return newTileLocation;
+        }
+
         changeTileLocation(locationData) {
             var currentLocationData = {
                 rowNumber: this.location.rowNumber,

@@ -90,31 +90,31 @@ $(document).ready(function () {
             // that events will not be duplicated
             $(document).off('keydown');
             $(document).on('keydown', function (e) {
-                console.log(e);
                 var keyPressed = e.originalEvent.code;
-                console.log(keyPressed);
                 if (keyPressed === "ArrowUp") {
                     MainGame.gameObject.combineAllPossibleTiles("up");
                     MainGame.gameObject.moveAllTiles("up");
-                    MainGame.gameObject.createRandomTile();
-                    MainGame.gameObject.renderCurrentGameScore();
                 } else if (keyPressed === "ArrowDown") {
                     MainGame.gameObject.combineAllPossibleTiles("down");
                     MainGame.gameObject.moveAllTiles("down");
-                    MainGame.gameObject.createRandomTile();
-                    MainGame.gameObject.renderCurrentGameScore();
                 } else if (keyPressed === "ArrowLeft") {
                     MainGame.gameObject.combineAllPossibleTiles("left");
                     MainGame.gameObject.moveAllTiles("left");
-                    MainGame.gameObject.createRandomTile();
-                    MainGame.gameObject.renderCurrentGameScore();
                 } else if (keyPressed === "ArrowRight") {
                     MainGame.gameObject.combineAllPossibleTiles("right");
                     MainGame.gameObject.moveAllTiles("right");
-                    MainGame.gameObject.createRandomTile();
-                    MainGame.gameObject.renderCurrentGameScore();
+
                 } else if (keyPressed === "KeyR") {
                     MainGame.gameObject.restartGame();
+                }
+
+                if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(keyPressed)) {
+                    MainGame.gameObject.createRandomTile();
+                    MainGame.gameObject.renderCurrentGameScore();
+                    if (MainGame.gameObject.checkIfPlayerWonTheGame()) {
+                        MainGame.gameObject.disableArrowKeys();
+                        // TODO: add calling "You are won!" screen here
+                    }
                 }
             });
         }
@@ -179,6 +179,14 @@ $(document).ready(function () {
                     this.#mainGameField.children(`#cell-${rowNumber}-${cellNumber}`).css('background-color', currentTile.color);
 
                 }
+            }
+        }
+
+        checkIfPlayerWonTheGame () {
+            if (this.maxTileScore !== 2048) {
+                return false
+            } else {
+                return true;
             }
         }
 
@@ -508,10 +516,6 @@ $(document).ready(function () {
 
             this.location.rowNumber = newLocationData.rowNumber;
             this.location.cellNumber = newLocationData.cellNumber;
-
-            if (MainGame.gameObject.tilesData[newLocationData.rowNumber][newLocationData.cellNumber] !== null) {
-                throw `Trying to move tile to already occupied cell [${newLocationData.rowNumber}][${newLocationData.cellNumber}]`;
-            }
 
             MainGame.gameObject.tilesData[currentLocationData.rowNumber][currentLocationData.cellNumber] = null;
             MainGame.gameObject.tilesData[newLocationData.rowNumber][newLocationData.cellNumber] = this;

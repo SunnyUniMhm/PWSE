@@ -218,6 +218,86 @@ $(document).ready(function () {
                 }
             }
         }
+
+        moveAllTiles(direction) {
+            // starting/last row/cell numbers for cycling through all game tiles
+            var startingRow = 0;
+            var startingCell = 0;
+            var lastRow = 0;
+            var lastCell = 0;
+            // direction of cycling through rows/cells
+            var rowsCycleDirection = "forward";
+            var cellsCycleDirection = "forward";
+
+            if (!['up', 'down', 'left', 'right'].includes(direction)) {
+                throw "Trying to move game tiles in unknown direction";
+            }
+
+            if (direction === "up") {
+                startingRow = 1;
+                startingCell = 1;
+                lastRow = 4;
+                lastCell = 4;
+                rowsCycleDirection = "forward";
+                cellsCycleDirection = "forward";
+            } else if (direction === "down") {
+                startingRow = 4;
+                startingCell = 1;
+                lastRow = 1;
+                lastCell = 4;
+                rowsCycleDirection = "backward";
+                cellsCycleDirection = "forward";
+            } else if (direction === "left") {
+                startingRow = 1;
+                startingCell = 1;
+                lastRow = 4;
+                lastCell = 4;
+                rowsCycleDirection = "forward";
+                cellsCycleDirection = "forward";
+            } else if (direction === "right") {
+                startingRow = 1;
+                startingCell = 4;
+                lastRow = 4;
+                lastCell = 1;
+                rowsCycleDirection = "forward";
+                cellsCycleDirection = "backward";
+            }
+            // cycling through all game tiles using specified parameters
+            for (let row = startingRow;;) {
+                for (let cell = startingCell;;) {
+                    if (MainGame.gameObject.tilesData[row][cell] !== null) {
+                        MainGame.gameObject.tilesData[row][cell].moveTile(direction);
+                    }
+                    if (cellsCycleDirection === "forward") {
+                        if (cell < lastCell) {
+                            cell ++;
+                        } else {
+                            break;
+                        }
+                    } else if (cellsCycleDirection === "backward") {
+                        if (cell > lastCell) {
+                            cell --;
+                        } else {
+                            break;
+                        }
+                    }
+                }
+
+                if (rowsCycleDirection === "forward") {
+                    if (row < lastRow) {
+                        row ++;
+                    } else {
+                        break;
+                    }
+                } else if (rowsCycleDirection === "backward") {
+                    if (row > lastRow) {
+                        row --;
+                    } else {
+                        break;
+                    }
+                }
+            }
+        }
     }
 
 	class GameTile {

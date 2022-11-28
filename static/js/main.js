@@ -114,6 +114,12 @@ $(document).ready(function () {
                     if (MainGame.gameObject.checkIfPlayerWonTheGame()) {
                         MainGame.gameObject.disableArrowKeys();
                         // TODO: add calling "You are won!" screen here
+                        return;
+                    }
+                    if (MainGame.gameObject.checkIfPlayerLostTheGame()) {
+                        MainGame.gameObject.disableArrowKeys();
+                        // TODO: add calling "Sorry, you are lost.." screen here
+                        return;
                     }
                 }
             });
@@ -188,6 +194,33 @@ $(document).ready(function () {
             } else {
                 return true;
             }
+        }
+
+        checkIfPlayerLostTheGame () {
+            if (this.freeCellsLeft !== 0) {
+                return false;
+            }
+            for (let rowNumber = 1; rowNumber <= 4; rowNumber ++) {
+                for (let cellNumber = 1; cellNumber <= 4; cellNumber ++) {
+                    let currentCell = this.tilesData[rowNumber][cellNumber];
+                    // check if the current cell is empty
+                    if (currentCell === null) {
+                        continue;
+                    }
+                    // check if any nearby tile is combinable with current one
+                    // and if any is combinable return FALSE
+                    // since player has not yet lost the game
+                    if (
+                        currentCell.checkForPossibilityOfTheCombining("up") === true
+                        || currentCell.checkForPossibilityOfTheCombining("down") === true
+                        || currentCell.checkForPossibilityOfTheCombining("left") === true
+                        || currentCell.checkForPossibilityOfTheCombining("right") === true
+                    ) {
+                        return false;
+                    }
+                }
+            }
+            return true;
         }
 
         restartGame() {

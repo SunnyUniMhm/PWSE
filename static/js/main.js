@@ -333,14 +333,14 @@ $(document).ready(function () {
                 throw "Trying to look for the next game tile in unknown direction";
             }
 
-            // return NULL if current tile already last in specified direction
+            // return FALSE if current tile already last in specified direction
             if (
                 (direction === "up" && this.location.rowNumber === 0)
                 || (direction === "down" && this.location.rowNumber === 4)
                 || (direction === "left" && this.location.cellNumber === 0)
                 || (direction === "right" && this.location.cellNumber === 4)
             ) {
-                return null;
+                return false;
             }
 
             do {
@@ -384,7 +384,7 @@ $(document).ready(function () {
             }
 
             locationOfTileToBeCombinedWith = this.lookForTheNextTile(combiningDirection);
-            if (locationOfTileToBeCombinedWith !== null) {
+            if (locationOfTileToBeCombinedWith !== null && locationOfTileToBeCombinedWith !== false) {
                 if (MainGame.gameObject.tilesData[locationOfTileToBeCombinedWith.rowNumber][locationOfTileToBeCombinedWith.cellNumber].score !== this.score) {
                     // return FALSE if tile in the direction of combining has different score
                     return false;

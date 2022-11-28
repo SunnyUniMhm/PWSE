@@ -195,6 +195,13 @@ $(document).ready(function () {
             }
         }
 
+        createRandomTile() {
+            if (this.freeCellsLeft > 0) {
+                const tileLocation = this.getRandomEmptyCellLocation();
+                new GameTile(tileLocation);
+            }
+        }
+
         combineAllPossibleTiles(combiningDirection) {
             let tilesToBeCombined = [];
 
@@ -452,9 +459,6 @@ $(document).ready(function () {
 
             this.location.rowNumber = newLocationData.rowNumber;
             this.location.cellNumber = newLocationData.cellNumber;
-
-            console.log(newLocationData.rowNumber);
-            console.log(newLocationData.cellNumber);
 
             if (MainGame.gameObject.tilesData[newLocationData.rowNumber][newLocationData.cellNumber] !== null) {
                 throw `Trying to move tile to already occupied cell [${newLocationData.rowNumber}][${newLocationData.cellNumber}]`;

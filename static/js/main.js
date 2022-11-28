@@ -286,7 +286,7 @@ $(document).ready(function () {
             MainGame.gameObject.renderGameTiles();
         }
 
-        moveTile(locationData) {
+        changeTileLocation(locationData) {
             var currentLocationData = {
                 rowNumber: this.location.rowNumber,
                 cellNumber: this.location.cellNumber

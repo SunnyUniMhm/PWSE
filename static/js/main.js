@@ -286,6 +286,11 @@ $(document).ready(function () {
             MainGame.gameObject.renderGameTiles();
         }
 
+        moveTile(direction) {
+            var newTileLocation = this.generateNewTileLocation(direction);
+            this.changeTileLocation(newTileLocation);
+        }
+
         generateNewTileLocation(direction) {
             // current tile location
             var currentLocationData = {

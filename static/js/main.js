@@ -59,6 +59,11 @@ $(document).ready(function () {
             this.#gameScoreElement = $('#game-score');
             this.maxTileScore = 2;
             MainGame.gameObject = this;
+            this.createGameField();
+            this.renderCurrentGameScore();
+            this.createRandomTile();
+            this.renderGameTiles();
+            this.enableHotkeys();
         }
 
         static get tilesColors() {
@@ -658,6 +663,4 @@ $(document).ready(function () {
     } catch (exception) {
         alert(exception);
     }
-
-    game.createGameField();
 });

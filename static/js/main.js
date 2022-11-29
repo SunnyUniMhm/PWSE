@@ -52,11 +52,15 @@ $(document).ready(function () {
             if (!$('#main-game-field')) {
                 throw "Main game field element is not found";
             }
-            this.#mainGameField = $('#main-game-field');
             if (!$('#game-score')) {
                 throw "Game score element is not found";
             }
+            if (!$('#new-game-button')) {
+                throw "'New Game' button element is not found";
+            }
+            this.#mainGameField = $('#main-game-field');
             this.#gameScoreElement = $('#game-score');
+            this.#newGameButtonElement = $('#new-game-button');
             this.maxTileScore = 2;
             MainGame.gameObject = this;
             this.createGameField();
@@ -64,6 +68,9 @@ $(document).ready(function () {
             this.createRandomTile();
             this.renderGameTiles();
             this.enableHotkeys();
+            this.#newGameButtonElement.on('click', function () {
+                MainGame.gameObject.restartGame();
+            });
         }
 
         static get tilesColors() {

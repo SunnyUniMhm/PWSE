@@ -59,6 +59,11 @@ $(document).ready(function () {
             this.#gameScoreElement = $('#game-score');
             this.maxTileScore = 2;
             MainGame.gameObject = this;
+            this.createGameField();
+            this.renderCurrentGameScore();
+            this.createRandomTile();
+            this.renderGameTiles();
+            this.enableHotkeys();
         }
 
         static get tilesColors() {
@@ -90,31 +95,37 @@ $(document).ready(function () {
             // that events will not be duplicated
             $(document).off('keydown');
             $(document).on('keydown', function (e) {
-                console.log(e);
                 var keyPressed = e.originalEvent.code;
-                console.log(keyPressed);
                 if (keyPressed === "ArrowUp") {
                     MainGame.gameObject.combineAllPossibleTiles("up");
                     MainGame.gameObject.moveAllTiles("up");
-                    MainGame.gameObject.createRandomTile();
-                    MainGame.gameObject.renderCurrentGameScore();
                 } else if (keyPressed === "ArrowDown") {
                     MainGame.gameObject.combineAllPossibleTiles("down");
                     MainGame.gameObject.moveAllTiles("down");
-                    MainGame.gameObject.createRandomTile();
-                    MainGame.gameObject.renderCurrentGameScore();
                 } else if (keyPressed === "ArrowLeft") {
                     MainGame.gameObject.combineAllPossibleTiles("left");
                     MainGame.gameObject.moveAllTiles("left");
-                    MainGame.gameObject.createRandomTile();
-                    MainGame.gameObject.renderCurrentGameScore();
                 } else if (keyPressed === "ArrowRight") {
                     MainGame.gameObject.combineAllPossibleTiles("right");
                     MainGame.gameObject.moveAllTiles("right");
-                    MainGame.gameObject.createRandomTile();
-                    MainGame.gameObject.renderCurrentGameScore();
+
                 } else if (keyPressed === "KeyR") {
                     MainGame.gameObject.restartGame();
+                }
+
+                if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(keyPressed)) {
+                    MainGame.gameObject.createRandomTile();
+                    MainGame.gameObject.renderCurrentGameScore();
+                    if (MainGame.gameObject.checkIfPlayerWonTheGame()) {
+                        MainGame.gameObject.disableArrowKeys();
+                        MainGame.gameObject.renderPlayerHasWonScreen();
+                        return;
+                    }
+                    if (MainGame.gameObject.checkIfPlayerLostTheGame()) {
+                        MainGame.gameObject.disableArrowKeys();
+                        MainGame.gameObject.renderPlayerHasLostScreen();
+                        return;
+                    }
                 }
             });
         }
@@ -182,6 +193,61 @@ $(document).ready(function () {
             }
         }
 
+        checkIfPlayerWonTheGame () {
+            if (this.maxTileScore !== 2048) {
+                return false
+            } else {
+                return true;
+            }
+        }
+
+        checkIfPlayerLostTheGame () {
+            if (this.freeCellsLeft !== 0) {
+                return false;
+            }
+            for (let rowNumber = 1; rowNumber <= 4; rowNumber ++) {
+                for (let cellNumber = 1; cellNumber <= 4; cellNumber ++) {
+                    let currentCell = this.tilesData[rowNumber][cellNumber];
+                    // check if the current cell is empty
+                    if (currentCell === null) {
+                        continue;
+                    }
+                    // check if any nearby tile is combinable with current one
+                    // and if any is combinable return FALSE
+                    // since player has not yet lost the game
+                    if (
+                        currentCell.checkForPossibilityOfTheCombining("up") === true
+                        || currentCell.checkForPossibilityOfTheCombining("down") === true
+                        || currentCell.checkForPossibilityOfTheCombining("left") === true
+                        || currentCell.checkForPossibilityOfTheCombining("right") === true
+                    ) {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+
+        renderPlayerHasWonScreen () {
+            $('#main-game-field').before('<div id="player-has-won-screen" class="game-result-screen w-100 h-100 bg-secondary fw-bold text-white text-center rounded fs-2 text-uppercase position-absolute p-0 m-0">You have won!!</div>');
+        }
+
+        removePlayerHasWonScreen () {
+            if ($('#player-has-won-screen') !== null) {
+                $('#player-has-won-screen').remove();
+            }
+        }
+
+        renderPlayerHasLostScreen () {
+            $('#main-game-field').before('<div id="player-has-lost-screen" class="game-result-screen w-100 h-100 bg-secondary fw-bold text-white text-center rounded fs-2 text-uppercase position-absolute p-0 m-0">You have lost</div>');
+        }
+
+        removePlayerHasLostScreen () {
+            if ($('#player-has-lost-screen') !== null) {
+                $('#player-has-lost-screen').remove();
+            }
+        }
+
         restartGame() {
             this.tilesData = {
                 1: {
@@ -213,6 +279,8 @@ $(document).ready(function () {
             this.maxTileScore = 2;
             this.totalScore = 0;
             this.updateAmountOfTheFreeCells();
+            this.removePlayerHasWonScreen();
+            this.removePlayerHasLostScreen();
             this.renderCurrentGameScore();
             this.renderGameTiles();
             this.renderCurrentGameScore();
@@ -509,10 +577,6 @@ $(document).ready(function () {
             this.location.rowNumber = newLocationData.rowNumber;
             this.location.cellNumber = newLocationData.cellNumber;
 
-            if (MainGame.gameObject.tilesData[newLocationData.rowNumber][newLocationData.cellNumber] !== null) {
-                throw `Trying to move tile to already occupied cell [${newLocationData.rowNumber}][${newLocationData.cellNumber}]`;
-            }
-
             MainGame.gameObject.tilesData[currentLocationData.rowNumber][currentLocationData.cellNumber] = null;
             MainGame.gameObject.tilesData[newLocationData.rowNumber][newLocationData.cellNumber] = this;
             MainGame.gameObject.renderGameTiles();
@@ -621,6 +685,4 @@ $(document).ready(function () {
     } catch (exception) {
         alert(exception);
     }
-
-    game.createGameField();
 });

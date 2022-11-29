@@ -17,3 +17,11 @@
 #main-game-field > div:hover {
     opacity: 0.85;
 }
+
+.game-result-screen {
+    opacity: 0.85;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: default;
+}

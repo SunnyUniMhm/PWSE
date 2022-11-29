@@ -123,7 +123,7 @@ $(document).ready(function () {
                     }
                     if (MainGame.gameObject.checkIfPlayerLostTheGame()) {
                         MainGame.gameObject.disableArrowKeys();
-                        // TODO: add calling "Sorry, you are lost.." screen here
+                        MainGame.gameObject.renderPlayerHasLostScreen();
                         return;
                     }
                 }
@@ -238,6 +238,16 @@ $(document).ready(function () {
             }
         }
 
+        renderPlayerHasLostScreen () {
+            $('#main-game-field').before('<div id="player-has-lost-screen" class="game-result-screen w-100 h-100 bg-secondary fw-bold text-white text-center rounded fs-2 text-uppercase position-absolute p-0 m-0">You have lost</div>');
+        }
+
+        removePlayerHasLostScreen () {
+            if ($('#player-has-lost-screen') !== null) {
+                $('#player-has-lost-screen').remove();
+            }
+        }
+
         restartGame() {
             this.tilesData = {
                 1: {
@@ -270,6 +280,7 @@ $(document).ready(function () {
             this.totalScore = 0;
             this.updateAmountOfTheFreeCells();
             this.removePlayerHasWonScreen();
+            this.removePlayerHasLostScreen();
             this.renderCurrentGameScore();
             this.renderGameTiles();
             this.renderCurrentGameScore();

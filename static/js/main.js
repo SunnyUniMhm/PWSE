@@ -118,7 +118,7 @@ $(document).ready(function () {
                     MainGame.gameObject.renderCurrentGameScore();
                     if (MainGame.gameObject.checkIfPlayerWonTheGame()) {
                         MainGame.gameObject.disableArrowKeys();
-                        // TODO: add calling "You are won!" screen here
+                        MainGame.gameObject.renderPlayerHasWonScreen();
                         return;
                     }
                     if (MainGame.gameObject.checkIfPlayerLostTheGame()) {
@@ -228,6 +228,16 @@ $(document).ready(function () {
             return true;
         }
 
+        renderPlayerHasWonScreen () {
+            $('#main-game-field').before('<div id="player-has-won-screen" class="game-result-screen w-100 h-100 bg-secondary fw-bold text-white text-center rounded fs-2 text-uppercase position-absolute p-0 m-0">You have won!!</div>');
+        }
+
+        removePlayerHasWonScreen () {
+            if ($('#player-has-won-screen') !== null) {
+                $('#player-has-won-screen').remove();
+            }
+        }
+
         restartGame() {
             this.tilesData = {
                 1: {
@@ -259,6 +269,7 @@ $(document).ready(function () {
             this.maxTileScore = 2;
             this.totalScore = 0;
             this.updateAmountOfTheFreeCells();
+            this.removePlayerHasWonScreen();
             this.renderCurrentGameScore();
             this.renderGameTiles();
             this.renderCurrentGameScore();

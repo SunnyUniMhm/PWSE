@@ -97,15 +97,19 @@ $(document).ready(function () {
             $(document).on('keydown', function (e) {
                 var keyPressed = e.originalEvent.code;
                 if (keyPressed === "ArrowUp") {
+                    MainGame.gameObject.playTileArrowMovementAnimation('up');
                     MainGame.gameObject.combineAllPossibleTiles("up");
                     MainGame.gameObject.moveAllTiles("up");
                 } else if (keyPressed === "ArrowDown") {
+                    MainGame.gameObject.playTileArrowMovementAnimation('down');
                     MainGame.gameObject.combineAllPossibleTiles("down");
                     MainGame.gameObject.moveAllTiles("down");
                 } else if (keyPressed === "ArrowLeft") {
+                    MainGame.gameObject.playTileArrowMovementAnimation('left');
                     MainGame.gameObject.combineAllPossibleTiles("left");
                     MainGame.gameObject.moveAllTiles("left");
                 } else if (keyPressed === "ArrowRight") {
+                    MainGame.gameObject.playTileArrowMovementAnimation('right');
                     MainGame.gameObject.combineAllPossibleTiles("right");
                     MainGame.gameObject.moveAllTiles("right");
 
@@ -246,6 +250,32 @@ $(document).ready(function () {
             if ($('#player-has-lost-screen') !== null) {
                 $('#player-has-lost-screen').remove();
             }
+        }
+
+        playTileArrowMovementAnimation(direction) {
+            console.log(direction);
+            var animationClasses = {
+                "up":'tile-movement-arrow-top',
+                "down":'tile-movement-arrow-bottom',
+                "left":'tile-movement-arrow-left',
+                "right":'tile-movement-arrow-right'
+            };
+            if (!['up', 'down', 'left', 'right'].includes(direction)) {
+                throw "Trying to create arrow moving in unknown direction";
+            }
+
+            // adding arrow image on screen
+            $('#main-game-field').before('<div id="tile-movement-arrow-container" class="w-100 h-100 opacity-25 fw-bold text-white text-center rounded fs-2 position-absolute p-0 m-0"><img src="static/img/squared_arrow_256px.png"></div>');
+            console.log('arrow was created');
+            // removing prevous animations if any
+            $('#tile-movement-arrow-container').removeClass("tile-movement-arrow-top tile-movement-arrow-bottom tile-movement-arrow-left tile-movement-arrow-right");
+            // playing arrow animation accordingly to direction
+            $('#tile-movement-arrow-container').addClass(animationClasses[direction]);
+            // removing arrow image from the screen after 0.225 seconds
+            // so animation will have enough time to be finished
+            setTimeout(function () {
+                $('#tile-movement-arrow-container').remove();
+            }, 225);
         }
 
         restartGame() {

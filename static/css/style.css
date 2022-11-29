@@ -25,3 +25,52 @@
     justify-content: center;
     cursor: default;
 }
+
+#tile-movement-arrow-container > img {
+    width: 160px;
+    height: 160px;
+}
+
+.tile-movement-arrow-right {
+    transform: rotate(270deg);
+    animation-name: tile-movement-arrow-animation-right;
+    animation-duration: 0.25s;
+}
+
+.tile-movement-arrow-left {
+    transform: rotate(90deg);
+    animation-name: tile-movement-arrow-animation-left;
+    animation-duration: 0.25s;
+}
+
+.tile-movement-arrow-top {
+    transform: rotate(180deg);
+    animation-name: tile-movement-arrow-animation-top;
+    animation-duration: 0.25s;
+}
+
+.tile-movement-arrow-bottom {
+    transform: rotate(0deg);
+    animation-name: tile-movement-arrow-animation-bottom;
+    animation-duration: 0.25s;
+}
+
+@keyframes tile-movement-arrow-animation-right {
+    from {left: 0%}
+    to {left: 50%}
+}
+
+@keyframes tile-movement-arrow-animation-left {
+    from {right: 0%}
+    to {right: 50%}
+}
+
+@keyframes tile-movement-arrow-animation-top {
+    from {bottom: 0%}
+    to {bottom: 50%}
+}
+
+@keyframes tile-movement-arrow-animation-bottom {
+    from {top: 0%}
+    to {top: 50%}
+}

@@ -102,7 +102,7 @@ $(document).ready(function () {
             // that events will not be duplicated
             $(document).off('keydown');
             $(document).on('keydown', function (e) {
-                var keyPressed = e.originalEvent.code;
+                let keyPressed = e.originalEvent.code;
                 if (keyPressed === "ArrowUp") {
                     MainGame.gameObject.playTileArrowMovementAnimation('up');
                     MainGame.gameObject.combineAllPossibleTiles("up");
@@ -146,7 +146,7 @@ $(document).ready(function () {
             // restart key functionality
             $(document).off('keydown');
             $(document).on('keydown', function (e) {
-                var keyPressed = e.originalEvent.code;
+                let keyPressed = e.originalEvent.code;
                 if (keyPressed === "KeyR") {
                     MainGame.gameObject.restartGame();
                 }
@@ -261,7 +261,7 @@ $(document).ready(function () {
 
         playTileArrowMovementAnimation(direction) {
             console.log(direction);
-            var animationClasses = {
+            let animationClasses = {
                 "up":'tile-movement-arrow-top',
                 "down":'tile-movement-arrow-bottom',
                 "left":'tile-movement-arrow-left',
@@ -326,8 +326,8 @@ $(document).ready(function () {
         }
 
         getRandomEmptyCellLocation () {
-            var currentlyEmptyCells = [];
-            var randomEmptyCell = [];
+            let currentlyEmptyCells = [];
+            let randomEmptyCell = [];
 
             for (let rowNumber = 1; rowNumber <= 4; rowNumber ++) {
                 for (let cellNumber = 1; cellNumber <= 4; cellNumber ++) {
@@ -382,13 +382,13 @@ $(document).ready(function () {
 
         moveAllTiles(direction) {
             // starting/last row/cell numbers for cycling through all game tiles
-            var startingRow = 0;
-            var startingCell = 0;
-            var lastRow = 0;
-            var lastCell = 0;
+            let startingRow = 0;
+            let startingCell = 0;
+            let lastRow = 0;
+            let lastCell = 0;
             // direction of cycling through rows/cells
-            var rowsCycleDirection = "forward";
-            var cellsCycleDirection = "forward";
+            let rowsCycleDirection = "forward";
+            let cellsCycleDirection = "forward";
 
             if (!['up', 'down', 'left', 'right'].includes(direction)) {
                 throw "Trying to move game tiles in unknown direction";
@@ -528,23 +528,23 @@ $(document).ready(function () {
         }
 
         moveTile(direction) {
-            var newTileLocation = this.generateNewTileLocation(direction);
+            let newTileLocation = this.generateNewTileLocation(direction);
             this.changeTileLocation(newTileLocation);
         }
 
         generateNewTileLocation(direction) {
             // current tile location
-            var currentLocationData = {
+            let currentLocationData = {
                 rowNumber: this.location.rowNumber,
                 cellNumber: this.location.cellNumber
             };
             // location of the tile next to current in the specified direction
-            var nextTileLocation = {
+            let nextTileLocation = {
                 rowNumber: 0,
                 cellNumber: 0
             };
             // new tile location after modifying according to the direction
-            var newTileLocation = {
+            let newTileLocation = {
                 rowNumber: 0,
                 cellNumber: 0
             };
@@ -590,11 +590,11 @@ $(document).ready(function () {
         }
 
         changeTileLocation(locationData) {
-            var currentLocationData = {
+            let currentLocationData = {
                 rowNumber: this.location.rowNumber,
                 cellNumber: this.location.cellNumber
             };
-            var newLocationData = {
+            let newLocationData = {
                 rowNumber: 0,
                 cellNumber: 0
             };
@@ -620,7 +620,7 @@ $(document).ready(function () {
         }
 
         lookForTheNextTile(direction) {
-            var locationOfTheNextTile = {
+            let locationOfTheNextTile = {
                 rowNumber: this.location.rowNumber,
                 cellNumber: this.location.cellNumber
             };

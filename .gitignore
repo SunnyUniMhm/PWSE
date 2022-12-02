@@ -1,0 +1,12 @@
+# Bootstrap stylesheets
+static/css/bootstrap*
+
+# Bootstrap scripts
+static/js/bootstrap*
+
+# JQuery
+static/js/jquery*
+
+# Backup files
+**.bak
+

@@ -4,9 +4,34 @@
 /* eslint-env jquery */
 /* eslint-env es6 */
 
+/**
+ * @typedef  {Object} GameTileLocation
+ * @property {number} rowNumber  - Number of the row in which game tile are located
+ * @property {number} cellNumber - Number of the cell in which game tile are located
+ */
+
 $(document).ready(function () {
     "use strict";
     
+    /**
+     * Class represents game state, 
+     * parametrs that are related to general game data 
+     * and methods that are affecting overall game state
+     *
+     * @author   SunnyUniMhm
+     * @version  0.0.1
+     * @license  GNU Public License
+     * 
+     * @property {nubmer} totalScore           - Total game score acquired from combining tiles
+     * @property {number} maxTileScore         - Maximum tile score at the current moment in time
+     * @property {number} freeCellsLeft        - Amount of game cells without game tiles in them at the current moment in time
+     * @property {array}  tilesData            - Data about all currently existing game tiles
+     * @property {object} mainGameField        - JQuery object for main game field DOM node
+     * @property {object} gameScoreElement     - JQuery object for game score DOM node
+     * @property {object} gameObject           - Object that was created from current class for later calling for it
+     * @property {string} defaultCellBgColor   - Default background color for empty game cell
+     * @property {object} newGameButtonElement - JQuery object for "New game" button DOM node
+     */
     class MainGame {
         totalScore;
         maxTileScore;
@@ -17,6 +42,13 @@ $(document).ready(function () {
         gameObject;
         #defaultCellBgColor;
 
+        /**
+         * Creates main game object and defines standard variables and JQuery objects
+         * 
+         * @author  SunnyUniMhm
+         * @version 0.0.1
+         * @license GNU Public License
+         */
         constructor() {
             this.#defaultCellBgColor = '#e5dede';
             this.totalScore = 0;
@@ -73,6 +105,14 @@ $(document).ready(function () {
             });
         }
 
+        /**
+         * Defines constant with colors for
+         * game tiles for different tile values
+         * 
+         * @author  SunnyUniMhm
+         * @version 0.0.1
+         * @license GNU Public License
+         */
         static get tilesColors() {
             return {
                 2: '#7cb5e2',
@@ -89,6 +129,13 @@ $(document).ready(function () {
             };
         }
 
+        /**
+         * Renders 4x4 game field on the screen
+         * 
+         * @author  SunnyUniMhm
+         * @version 0.0.1
+         * @license GNU Public License
+         */
         createGameField() {
             for (let rowNumber = 1; rowNumber <= 4; rowNumber ++) {
                 for (let cellNumber = 1; cellNumber <= 4; cellNumber ++) {
@@ -97,6 +144,13 @@ $(document).ready(function () {
             }
         }
 
+        /**
+         * Enables hotkeys functionality
+         * 
+         * @author  SunnyUniMhm
+         * @version 0.0.1
+         * @license GNU Public License
+         */
         enableHotkeys () {
             // removing all hotkeys events to be sure
             // that events will not be duplicated
@@ -141,6 +195,13 @@ $(document).ready(function () {
             });
         }
 
+        /**
+         * Disables all hotkeys except for "Restart" button
+         * 
+         * @author  SunnyUniMhm
+         * @version 0.0.1
+         * @license GNU Public License
+         */
         disableArrowKeys() {
             // removing arrow keys controls and only allowing
             // restart key functionality
@@ -153,6 +214,15 @@ $(document).ready(function () {
             });
         }
 
+        /**
+         * Increases current total game score
+         * 
+         * @author  SunnyUniMhm
+         * @version 0.0.1
+         * @license GNU Public License
+         * 
+         * @param   {number} scoreAmount - Amount of score to be increased by
+         */
         increaseTotalScore(scoreAmount) {
             if (scoreAmount <= 0) {
                 throw "Score amount should be positive integer";
@@ -160,6 +230,13 @@ $(document).ready(function () {
             this.totalScore += scoreAmount;
         }
 
+        /**
+         * Increases current max game tile score
+         * 
+         * @author  SunnyUniMhm
+         * @version 0.0.1
+         * @license GNU Public License
+         */
         increaseMaxTileScore() {
             if (
                 this.maxTileScore >= 2048
@@ -170,6 +247,13 @@ $(document).ready(function () {
             this.maxTileScore = this.maxTileScore * 2;
         }
 
+        /**
+         * Updates current amount of free game cells
+         * 
+         * @author  SunnyUniMhm
+         * @version 0.0.1
+         * @license GNU Public License
+         */
         updateAmountOfTheFreeCells () {
             let currentAmountOfFreeCells = 0;
             for (let row in this.tilesData) {
@@ -183,10 +267,24 @@ $(document).ready(function () {
             this.freeCellsLeft = currentAmountOfFreeCells;
         }
 
+        /**
+         * Renders current game score on the screen
+         * 
+         * @author  SunnyUniMhm
+         * @version 0.0.1
+         * @license GNU Public License
+         */
         renderCurrentGameScore () {
             this.#gameScoreElement.text(this.totalScore);
         }
 
+        /**
+         * Renders current game tiles on the screen
+         * 
+         * @author  SunnyUniMhm
+         * @version 0.0.1
+         * @license GNU Public License
+         */
         renderGameTiles () {
             for (let rowNumber = 1; rowNumber <= 4; rowNumber ++) {
                 for (let cellNumber = 1; cellNumber <= 4; cellNumber ++) {
@@ -204,6 +302,15 @@ $(document).ready(function () {
             }
         }
 
+        /**
+         * Checks if player won the game (2048 tile exists)
+         * 
+         * @author  SunnyUniMhm
+         * @version 0.0.1
+         * @license GNU Public License
+         * 
+         * @returns {boolean} - Result of the check
+         */
         checkIfPlayerWonTheGame () {
             if (this.maxTileScore !== 2048) {
                 return false
@@ -212,6 +319,16 @@ $(document).ready(function () {
             }
         }
 
+        /**
+         * Checks if player lost the game
+         * (all game cells are occupied and there are no combinable tiles)
+         * 
+         * @author  SunnyUniMhm
+         * @version 0.0.1
+         * @license GNU Public License
+         * 
+         * @returns {boolean} - Result of the check
+         */
         checkIfPlayerLostTheGame () {
             if (this.freeCellsLeft !== 0) {
                 return false;
@@ -239,26 +356,64 @@ $(document).ready(function () {
             return true;
         }
 
+        /**
+         * Renders "You have won!!" message on the screen
+         * 
+         * @author  SunnyUniMhm
+         * @version 0.0.1
+         * @license GNU Public License
+         */
         renderPlayerHasWonScreen () {
             $('#main-game-field').before('<div id="player-has-won-screen" class="game-result-screen w-100 h-100 bg-secondary fw-bold text-white text-center rounded fs-2 text-uppercase position-absolute p-0 m-0">You have won!!</div>');
         }
 
+        /**
+         * Removes "You have won!!" message from the screen
+         * 
+         * @author  SunnyUniMhm
+         * @version 0.0.1
+         * @license GNU Public License
+         */
         removePlayerHasWonScreen () {
             if ($('#player-has-won-screen') !== null) {
                 $('#player-has-won-screen').remove();
             }
         }
 
+        /**
+         * Renders "You have lost" message on the screen
+         * 
+         * @author  SunnyUniMhm
+         * @version 0.0.1
+         * @license GNU Public License
+         */
         renderPlayerHasLostScreen () {
             $('#main-game-field').before('<div id="player-has-lost-screen" class="game-result-screen w-100 h-100 bg-secondary fw-bold text-white text-center rounded fs-2 text-uppercase position-absolute p-0 m-0">You have lost</div>');
         }
 
+        /**
+         * Removes "You have lost" message from the screen
+         * 
+         * @author  SunnyUniMhm
+         * @version 0.0.1
+         * @license GNU Public License
+         */
         removePlayerHasLostScreen () {
             if ($('#player-has-lost-screen') !== null) {
                 $('#player-has-lost-screen').remove();
             }
         }
 
+        /**
+         * Renders animated arrow on the screen
+         * And removes it from the screen after 0.225 seconds
+         * 
+         * @author  SunnyUniMhm
+         * @version 0.0.1
+         * @license GNU Public License
+         * 
+         * @param   {string} direction - direction in which arrow should be animated
+         */
         playTileArrowMovementAnimation(direction) {
             console.log(direction);
             let animationClasses = {
@@ -285,6 +440,14 @@ $(document).ready(function () {
             }, 225);
         }
 
+        /**
+         * Resets some of the standard game paremets to their ogirinal states
+         * and re-renders elements on the screen
+         * 
+         * @author  SunnyUniMhm
+         * @version 0.0.1
+         * @license GNU Public License
+         */
         restartGame() {
             this.tilesData = {
                 1: {
@@ -325,6 +488,17 @@ $(document).ready(function () {
             this.enableHotkeys();
         }
 
+        /**
+         * Checks if player lost the game
+         * (all game cells are occupiend and there are no combinable tiles)
+         * 
+         * @author  SunnyUniMhm
+         * @version 0.0.1
+         * @license GNU Public License
+         * 
+         * @returns {(object|boolean)} - Object with coordinates of random empty game cell
+         *                               or FALSE if there is no empty cells in the game
+         */
         getRandomEmptyCellLocation () {
             let currentlyEmptyCells = [];
             let randomEmptyCell = [];
@@ -349,6 +523,13 @@ $(document).ready(function () {
             }
         }
 
+        /**
+         * Creates new game tile in one of the empty game cells
+         * 
+         * @author  SunnyUniMhm
+         * @version 0.0.1
+         * @license GNU Public License
+         */
         createRandomTile() {
             if (this.freeCellsLeft > 0) {
                 const tileLocation = this.getRandomEmptyCellLocation();
@@ -356,6 +537,15 @@ $(document).ready(function () {
             }
         }
 
+        /**
+         * Combines all possible tiles in the specified direction
+         * 
+         * @author  SunnyUniMhm
+         * @version 0.0.1
+         * @license GNU Public License
+         * 
+         * @param   {string} combiningDirection - direction in which game tiles will be combined
+         */
         combineAllPossibleTiles(combiningDirection) {
             let tilesToBeCombined = [];
 
@@ -380,6 +570,15 @@ $(document).ready(function () {
             }
         }
 
+        /**
+         * Moves all existing game tiles in the specified direction
+         * 
+         * @author  SunnyUniMhm
+         * @version 0.0.1
+         * @license GNU Public License
+         * 
+         * @param   {string} direction - direction in which game tiles will be moved
+         */
         moveAllTiles(direction) {
             // starting/last row/cell numbers for cycling through all game tiles
             let startingRow = 0;
@@ -461,11 +660,34 @@ $(document).ready(function () {
         }
     }
 
+    /**
+     * Class represents game tile, 
+     * parametrs that are related to game tile data
+     * and methods that are affecting game tile state
+     * 
+     * @author   SunnyUniMhm
+     * @version  0.0.1
+     * @license  GNU Public License
+     * 
+     * @property {nubmer} score               - Current score of the game tile
+     * @property {string} color               - Current color of the game tile
+     * @property {GameTileLocation} location  - Current location of the game tile
+     */
 	class GameTile {
         score;
         color;
         location;
 
+        /**
+         * Creates game tile, defines standard variables and updates game state related variables
+         * Also renders current game tiles on screen
+         * 
+         * @author  SunnyUniMhm
+         * @version 0.0.1
+         * @license GNU Public License
+         * 
+         * @param   {GameTileLocation} locationData - Location in which game tile will be created
+         */
         constructor(locationData) {
             if (
                 locationData.rowNumber < 1
@@ -491,6 +713,16 @@ $(document).ready(function () {
             MainGame.gameObject.renderGameTiles();
         }
 
+        /**
+         * Upgrades tile to next level
+         * This includes increasing tile score and changing tile color
+         * Also renders current game tiles / total score on the screen
+         * and increases game's max. tile score if needed
+         * 
+         * @author  SunnyUniMhm
+         * @version 0.0.1
+         * @license GNU Public License
+         */
         upgradeTile() {
             if (
                 this.score >= 2048
@@ -517,6 +749,15 @@ $(document).ready(function () {
             }
         }
 
+        /**
+         * Removes game tile from the game
+         * This includes removing of the tile object
+         * Rendering game tiles on the screen and updating amount of the free cells
+         * 
+         * @author  SunnyUniMhm
+         * @version 0.0.1
+         * @license GNU Public License
+         */
         destroyTile () {
             if (MainGame.gameObject.tilesData[this.location.rowNumber][this.location.cellNumber] === null) {
                 throw `Trying to delete already non-existent tile on [${this.location.rowNumber}][${this.location.cellNumber}]`;
@@ -527,11 +768,29 @@ $(document).ready(function () {
             MainGame.gameObject.renderGameTiles();
         }
 
+        /**
+         * Moves game tile to a new location
+         * 
+         * @author  SunnyUniMhm
+         * @version 0.0.1
+         * @license GNU Public License
+         */
         moveTile(direction) {
             let newTileLocation = this.generateNewTileLocation(direction);
             this.changeTileLocation(newTileLocation);
         }
 
+        /**
+         * Generates new location for the game tile
+         * based on the current location and direction
+         * 
+         * @author  SunnyUniMhm
+         * @version 0.0.1
+         * @license GNU Public License
+         * 
+         * @param   {string} direction - Direction in which new location will be generated
+         * @returns {GameTileLocation} - New location of the game tile
+         */
         generateNewTileLocation(direction) {
             // current tile location
             let currentLocationData = {
@@ -589,6 +848,15 @@ $(document).ready(function () {
             return newTileLocation;
         }
 
+        /**
+         * Changes location of the game tile
+         * 
+         * @author  SunnyUniMhm
+         * @version 0.0.1
+         * @license GNU Public License
+         * 
+         * @param   {GameTileLocation} locationData - New location of the game tile
+         */
         changeTileLocation(locationData) {
             let currentLocationData = {
                 rowNumber: this.location.rowNumber,
@@ -619,6 +887,19 @@ $(document).ready(function () {
             MainGame.gameObject.renderGameTiles();
         }
 
+        /**
+         * Searches for the game tile that is located next to current one
+         * in specified direction
+         * 
+         * @author  SunnyUniMhm
+         * @version 0.0.1
+         * @license GNU Public License
+         * 
+         * @param   {string} direction                - Direction in which next tile will be searched
+         * @returns {(GameTileLocation|boolean|null)} - Location of the game tile next to current one
+         *                                              or FALSE if current game tile last in the specified direction
+         *                                              or NULL if no game tiles were found
+         */
         lookForTheNextTile(direction) {
             let locationOfTheNextTile = {
                 rowNumber: this.location.rowNumber,
@@ -669,6 +950,17 @@ $(document).ready(function () {
             return null;
         }
 
+        /**
+         * Checks if current game tile can be combined with the next one
+         * in the specified location
+         * 
+         * @author  SunnyUniMhm
+         * @version 0.0.1
+         * @license GNU Public License
+         * 
+         * @param   {string} combiningDirection - Direction in which combining possibility will be checked
+         * @returns {boolean}                   - Possibility of combining
+         */
         checkForPossibilityOfTheCombining(combiningDirection) {
             let locationOfTileToBeCombinedWith = {
                 rowNumber: 0,
@@ -694,6 +986,17 @@ $(document).ready(function () {
             }
         }
 
+        /**
+         * Combines current game tile with the next one
+         * in the specified location
+         * 
+         * @author  SunnyUniMhm
+         * @version 0.0.1
+         * @license GNU Public License
+         * 
+         * @param   {string} combiningDirection - Direction in which game tiles will be combined
+         * @returns {boolean}                   - Result status of combination
+         */
         combineTiles(combiningDirection) {
             let locationOfTileToBeCombinedWith = {
                 rowNumber: 0,
